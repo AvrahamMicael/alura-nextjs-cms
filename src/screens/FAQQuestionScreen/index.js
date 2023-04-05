@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { Footer } from '../../components/commons/Footer';
 import { Menu } from '../../components/commons/Menu';
+import cmsService from '../../services/cmsService';
 import { Box, Text, theme } from '../../theme/components';
 
 export async function getStaticPaths() {
@@ -13,23 +14,28 @@ export async function getStaticPaths() {
   };
 }
 
-export function getStaticProps({ params }) {
-  const { id } = params;
+export async function getStaticProps({ params: { id } }) {
+  const query = `
+    query {
+      contentFaqQuestion {
+        title
+        content {
+          value
+        }
+      }
+    }
+  `;
+  const { data: {
+    contentFaqQuestion: { title, content }
+  } } = await cmsService({ query });
+
   return {
     props: {
       id,
-      title: 'Fake Title',
-      content: `
-        <h2>Primeiro Tópico</h2>
-        <p>paragrafo simples</p>
-        <p>outro paragrafo simples</p>
-        <ul>
-          <li>Item de lista 01</li>
-          <li>Item de lista 02</li>
-        </ul>
-      `,
+      title,
+      content,
     }
-  }
+  };
 }
 
 export default function FAQQuestionScreen({ title, content }) {
