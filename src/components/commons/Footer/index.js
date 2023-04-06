@@ -24,7 +24,7 @@ export function Footer() {
             color: theme.colors.neutral.x000
           }}
         >
-          &copy; {new Date().getFullYear()} DevSoutinho. Todos os direitos reservados.
+          &copy; {new Date().getFullYear()} Todos os direitos reservados.
         </Text>
       </Box>
     </Box>
