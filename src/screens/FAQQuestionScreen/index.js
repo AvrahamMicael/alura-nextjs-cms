@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { StructuredText } from 'react-datocms/structured-text';
 import { Footer } from '../../components/commons/Footer';
 import { Menu } from '../../components/commons/Menu';
 import cmsService from '../../services/cmsService';
@@ -70,7 +71,7 @@ export default function FAQQuestionScreen({ title, content }) {
             {title}
           </Text>
 
-          <Box dangerouslySetInnerHTML={{ __html: content }} />
+          <StructuredText data={ content }/>
         </Box>
       </Box>
 
