@@ -6,29 +6,38 @@ import cmsService from '../../services/cmsService';
 import { Box, Text, theme } from '../../theme/components';
 
 export async function getStaticPaths() {
+  const query = `
+    query {
+      allContentFaqQuestions {
+        id
+      }
+    }
+  `;
+
+  const { data } = await cmsService({ query });
+  const paths = data.allContentFaqQuestions.map(({ id }) => ({
+    params: { id }
+  }));
+
   return {
-    paths: [
-      { params: { id: 'f138c88d' } },
-      { params: { id: 'h138c88d' } },
-    ],
+    paths,
     fallback: false,
   };
 }
 
 export async function getStaticProps({ params: { id } }) {
   const query = `
-    query {
-      contentFaqQuestion {
+    query($id: ItemId) {
+      contentFaqQuestion(filter: { id: { eq: $id } }) {
         title
         content {
           value
         }
       }
-    }
-  `;
+    }`;
   const { data: {
     contentFaqQuestion: { title, content }
-  } } = await cmsService({ query });
+  } } = await cmsService({ query, variables: { id } });
 
   return {
     props: {

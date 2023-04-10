@@ -1,35 +1,26 @@
 import Head from 'next/head';
 import { Footer } from '../../components/commons/Footer';
 import { Menu } from '../../components/commons/Menu';
+import cmsService from '../../services/cmsService';
 import { Box, Text, Link, Image, theme } from '../../theme/components';
 
-export function getStaticProps() {
+export async function getStaticProps() {
+  const query = `
+    query {
+      allContentFaqCategories(first: 5) {
+        id
+        title
+        questions {
+          id
+          title
+        }
+      }
+    }
+  `;
+  const { data } = await cmsService({ query });
   return {
     props: {
-      categories: [
-        {
-          id: 'b4bb5090',
-          name: 'Por onde começar',
-          questions: [
-            {
-              id: 'f138c88d',
-              name: 'Consigo entrar no mercado de trabalho com os cursos da Alura?',
-              content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-            }
-          ]
-        },
-        {
-          id: 'c4bb5090',
-          name: 'Formações e Projetos',
-          questions: [
-            {
-              id: 'h138c88d',
-              name: 'Qual é a diferença do certificado de participação para o certificado de conclusão de formação?',
-              content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-            }
-          ]
-        }
-      ]
+      categories: data.allContentFaqCategories,
     }
   }
 }
@@ -104,16 +95,16 @@ function FAQAllQuestionsScreen({ categories }) {
               flex: 3,
             }}
           >
-            {categories.map(({ id, name, questions }) => {
+            {categories.map(({ id, title, questions }) => {
               return (
                 <Box key={id} tag="article">
-                  <h1>{name}</h1>
+                  <h1>{title}</h1>
                   <Box tag="ul">
                     {questions.map((question) => (
                       <Box key={question.id} tag="li">
                         <Box tag="article">
                           <Link href={`/faq/${question.id}`}>
-                            <Text>{question.name}</Text>
+                            <Text>{question.title}</Text>
                           </Link>
                         </Box>
                       </Box>
